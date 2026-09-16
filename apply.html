@@ -55,38 +55,44 @@
   </form>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWSt92Bi_U6icRNnWpqDVcHBWAgcHrt9CH3fbTZ3IZOFROQ0n24t9Xc01jdRVeBlpv/exec";
-document.getElementById("Application").addEventListener("submit", async (e) => {
+const scriptURL = 'https://script.google.com/macros/s/AKfycbyWSt92Bi_U6icRNnWpqDVcHBWAgcHrt9CH3fbTZ3IZOFROQ0n24t9Xc01jdRVeBlpv/exec';
+const form = document.getElementById('admissionForm');
+
+form.addEventListener('submit', e => {
   e.preventDefault();
-  const form = e.target;
-  const btn = form.querySelector("button");
-  btn.textContent = "Submitting...";
-  btn.disabled = true;
+  const submitBtn = form.querySelector('button[type="submit"]');
+  submitBtn.textContent = 'Submitting...';
+  submitBtn.disabled = true;
+  
   const data = {
-    fullName: form.fullname.value,
-    dob: form.dob.value,
-    gender: form.gender.value,
-    guardian: form.guardian.value,
-    phone: form.phone.value,
-    email: form.email.value,
-    class: form.class.value,
-    address: form.address.value,
-    previousSchool: form.previousSchool.value
+    fullName: document.getElementById('fullName').value,
+    dob: document.getElementById('dob').value,
+    gender: document.getElementById('gender').value,
+    guardian: document.getElementById('guardian').value,
+    phone: document.getElementById('phone').value,
+    email: document.getElementById('email').value,
+    class: document.getElementById('class').value,
+    address: document.getElementById('address').value,
+    previousSchool: document.getElementById('previousSchool').value
   };
-  try {
-    await fetch(SCRIPT_URL, {
-      method: "POST",
-      mode: "no-cors",
-      body: JSON.stringify(data)
-    });
-    alert("Application submitted! Check your Google Sheet.");
+
+  fetch(scriptURL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data)
+  })
+  .then(() => {
+    alert('Application submitted! Check your Google Sheet.');
     form.reset();
-  } catch(err) {
-    alert("Failed: " + err.message);
-  } finally {
-    btn.textContent = "Submit Application";
-    btn.disabled = false;
-  }
+    submitBtn.textContent = 'Submit Application';
+    submitBtn.disabled = false;
+  })
+  .catch(error => {
+    alert('Error! ' + error.message);
+    submitBtn.textContent = 'Submit Application';
+    submitBtn.disabled = false;
+  });
 });
 </script>
 </body>
